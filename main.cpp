@@ -21,7 +21,14 @@ typedef enum {
 } BinaryTreeNodeChildMode;
 
 BinaryTreeNode *createBinaryTreeNode(int _key, BinaryTreeNode *pParentNode, BinaryTreeNodeChildMode childMode);
+void freeBinaryTree(BinaryTreeNode *pRoot);
 void binaryTreeInOrderWalk(BinaryTreeNode *pTree);
+BinaryTreeNode *binaryTreeSearch(BinaryTreeNode *pRoot, int key);
+BinaryTreeNode *binaryTreeSearch_2(BinaryTreeNode *pRoot, int key);
+BinaryTreeNode *binaryTreeMin(BinaryTreeNode *pRoot);
+BinaryTreeNode *binaryTreeMax(BinaryTreeNode *pRoot);
+BinaryTreeNode *binaryTreeSuccessor(BinaryTreeNode *pTreeNode);
+BinaryTreeNode *binaryTreePrecessor(BinaryTreeNode *pTreeNode);
 
 BinaryTreeNode *createBinaryTreeNode(int _key, BinaryTreeNode *pParentNode, BinaryTreeNodeChildMode childMode) {
     BinaryTreeNode *pNode = (BinaryTreeNode *)malloc(sizeof(BinaryTreeNode));
@@ -36,6 +43,14 @@ BinaryTreeNode *createBinaryTreeNode(int _key, BinaryTreeNode *pParentNode, Bina
     return pNode;
 }
 
+void freeBinaryTree(BinaryTreeNode *pRoot) {
+    if (pRoot) {
+        freeBinaryTree(pRoot->left);
+        freeBinaryTree(pRoot->right);
+        free(pRoot);
+    }
+}
+
 void binaryTreeInOrderWalk(BinaryTreeNode *pTree) {
     if (pTree) {
         binaryTreeInOrderWalk(pTree->left);
@@ -44,10 +59,83 @@ void binaryTreeInOrderWalk(BinaryTreeNode *pTree) {
     }
 }
 
+BinaryTreeNode *binaryTreeSearch(BinaryTreeNode *pRoot, int key) {
+    if (pRoot) {
+        if (key == pRoot->key) {
+            return pRoot;
+        } else if (key > pRoot->key) {
+            return binaryTreeSearch(pRoot->right, key);
+        } else {
+            return binaryTreeSearch(pRoot->left, key);
+        }
+    }
+    return NULL;
+}
+
+BinaryTreeNode *binaryTreeSearch_2(BinaryTreeNode *pRoot, int key) {
+    BinaryTreeNode *pTreeNode = pRoot;
+    while (pTreeNode) {
+        if (key == pTreeNode->key) {
+            break;
+        } else if (key > pTreeNode->key) {
+            pTreeNode = pTreeNode->right;
+        } else {
+            pTreeNode = pTreeNode->left;
+        }
+    }
+    return pTreeNode;
+}
+
+BinaryTreeNode *binaryTreeMin(BinaryTreeNode *pRoot) {
+    if (pRoot == NULL) {
+        return NULL;
+    }
+    BinaryTreeNode *pMinKeyNode = pRoot;
+    while (pMinKeyNode->left) {
+        pMinKeyNode = pMinKeyNode->left;
+    }
+    return pMinKeyNode;
+}
+
+BinaryTreeNode *binaryTreeMax(BinaryTreeNode *pRoot) {
+    if (pRoot == NULL) {
+        return NULL;
+    }
+    BinaryTreeNode *pMaxKeyNode = pRoot;
+    while (pMaxKeyNode->right) {
+        pMaxKeyNode = pMaxKeyNode->right;
+    }
+    return pMaxKeyNode;
+}
+
+BinaryTreeNode *binaryTreeSuccessor(BinaryTreeNode *pTreeNode) {
+    if (pTreeNode == NULL) {
+        return NULL;
+    }
+    if (pTreeNode->right) {
+        return binaryTreeMin(pTreeNode->right);
+    }
+    BinaryTreeNode *pCurrentNode = pTreeNode;
+    while (pCurrentNode->parent && pCurrentNode->parent->right == pCurrentNode) {
+        pCurrentNode = pCurrentNode->parent;
+    }
+    return pCurrentNode->parent;
+}
+
+BinaryTreeNode *binaryTreePrecessor(BinaryTreeNode *pTreeNode) {
+    return NULL;
+}
+
 int main(int argc, const char * argv[]) {
     BinaryTreeNode *pBinaryTree = createBinaryTreeNode(5, NULL, BinaryTreeNodeChildModeLeft);
-    createBinaryTreeNode(3, pBinaryTree, BinaryTreeNodeChildModeLeft);
-    createBinaryTreeNode(8, pBinaryTree, BinaryTreeNodeChildModeRight);
-    binaryTreeInOrderWalk(pBinaryTree);
+    BinaryTreeNode *pTreeNode1 = createBinaryTreeNode(3, pBinaryTree, BinaryTreeNodeChildModeLeft);
+    BinaryTreeNode *pTreeNode2 = createBinaryTreeNode(8, pBinaryTree, BinaryTreeNodeChildModeRight);
+    createBinaryTreeNode(2, pTreeNode1, BinaryTreeNodeChildModeLeft);
+    createBinaryTreeNode(4, pTreeNode1, BinaryTreeNodeChildModeRight);
+    createBinaryTreeNode(7, pTreeNode2, BinaryTreeNodeChildModeLeft);
+    createBinaryTreeNode(9, pTreeNode2, BinaryTreeNodeChildModeRight);
+    BinaryTreeNode *pKeyNode = binaryTreeSearch(pBinaryTree, 9);
+    BinaryTreeNode *pSuccessorKeyNode = binaryTreeSuccessor(pKeyNode);
+    freeBinaryTree(pBinaryTree);
     return 0;
 }
