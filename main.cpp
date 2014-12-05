@@ -31,6 +31,7 @@ BinaryTreeNode *binaryTreeMax(BinaryTreeNode *pRoot);
 BinaryTreeNode *binaryTreeMaxRecursive(BinaryTreeNode *pRoot);
 BinaryTreeNode *binaryTreeSuccessor(BinaryTreeNode *pTreeNode);
 BinaryTreeNode *binaryTreePrecessor(BinaryTreeNode *pTreeNode);
+void binaryTreeInsert(BinaryTreeNode **ppRoot, BinaryTreeNode *pNode);
 
 BinaryTreeNode *createBinaryTreeNode(int _key, BinaryTreeNode *pParentNode, BinaryTreeNodeChildMode childMode) {
     BinaryTreeNode *pNode = (BinaryTreeNode *)malloc(sizeof(BinaryTreeNode));
@@ -145,7 +146,37 @@ BinaryTreeNode *binaryTreeSuccessor(BinaryTreeNode *pTreeNode) {
 }
 
 BinaryTreeNode *binaryTreePrecessor(BinaryTreeNode *pTreeNode) {
-    return NULL;
+    if (pTreeNode == NULL) {
+        return NULL;
+    }
+    if (pTreeNode->left) {
+        return binaryTreeMin(pTreeNode->left);
+    }
+    BinaryTreeNode *pCurrentNode = pTreeNode;
+    if (pCurrentNode->parent && pCurrentNode->parent->left == pCurrentNode) {
+        pCurrentNode = pCurrentNode->parent;
+    }
+    return pCurrentNode->parent;
+}
+
+void binaryTreeInsert(BinaryTreeNode **ppRoot, BinaryTreeNode *pNode) {
+    if (ppRoot == NULL || pNode == NULL) {
+        return;
+    }
+    //Find a proper slot (stored in y)
+    BinaryTreeNode *y = NULL;
+    BinaryTreeNode *x = *ppRoot;
+    while (x) {
+        y = x;
+        x = ((pNode->key < x->key)? x->left: x->right);
+    }
+    //let y be parent of pNode, and pNode be left or right child to y
+    pNode->parent = y;
+    if (y == NULL) {
+        *ppRoot = pNode;
+    } else {
+        (pNode->key < y->key)? (y->left = pNode): (y->right = pNode);
+    }
 }
 
 #pragma mark -
@@ -157,8 +188,8 @@ int main(int argc, const char * argv[]) {
     createBinaryTreeNode(4, pTreeNode1, BinaryTreeNodeChildModeRight);
     createBinaryTreeNode(7, pTreeNode2, BinaryTreeNodeChildModeLeft);
     createBinaryTreeNode(9, pTreeNode2, BinaryTreeNodeChildModeRight);
-    BinaryTreeNode *maxNode = binaryTreeMaxRecursive(pBinaryTree);
-    BinaryTreeNode *minNode = binaryTreeMinRecursive(pBinaryTree);
+    BinaryTreeNode *insertNode = createBinaryTreeNode(6, NULL, BinaryTreeNodeChildModeLeft);
+    binaryTreeInsert(&pBinaryTree, insertNode);
     freeBinaryTree(pBinaryTree);
     return 0;
 }
