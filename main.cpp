@@ -26,7 +26,9 @@ void binaryTreeInOrderWalk(BinaryTreeNode *pTree);
 BinaryTreeNode *binaryTreeSearch(BinaryTreeNode *pRoot, int key);
 BinaryTreeNode *binaryTreeSearch_2(BinaryTreeNode *pRoot, int key);
 BinaryTreeNode *binaryTreeMin(BinaryTreeNode *pRoot);
+BinaryTreeNode *binaryTreeMinRecursive(BinaryTreeNode *pRoot);
 BinaryTreeNode *binaryTreeMax(BinaryTreeNode *pRoot);
+BinaryTreeNode *binaryTreeMaxRecursive(BinaryTreeNode *pRoot);
 BinaryTreeNode *binaryTreeSuccessor(BinaryTreeNode *pTreeNode);
 BinaryTreeNode *binaryTreePrecessor(BinaryTreeNode *pTreeNode);
 
@@ -97,6 +99,16 @@ BinaryTreeNode *binaryTreeMin(BinaryTreeNode *pRoot) {
     return pMinKeyNode;
 }
 
+BinaryTreeNode *binaryTreeMinRecursive(BinaryTreeNode *pRoot) {
+    if (pRoot == NULL) {
+        return NULL;
+    }
+    if (pRoot->left) {
+        return binaryTreeMinRecursive(pRoot->left);
+    }
+    return pRoot;
+}
+
 BinaryTreeNode *binaryTreeMax(BinaryTreeNode *pRoot) {
     if (pRoot == NULL) {
         return NULL;
@@ -106,6 +118,16 @@ BinaryTreeNode *binaryTreeMax(BinaryTreeNode *pRoot) {
         pMaxKeyNode = pMaxKeyNode->right;
     }
     return pMaxKeyNode;
+}
+
+BinaryTreeNode *binaryTreeMaxRecursive(BinaryTreeNode *pRoot) {
+    if (pRoot == NULL) {
+        return NULL;
+    }
+    if (pRoot->right) {
+        return binaryTreeMaxRecursive(pRoot->right);
+    }
+    return pRoot;
 }
 
 BinaryTreeNode *binaryTreeSuccessor(BinaryTreeNode *pTreeNode) {
@@ -126,6 +148,7 @@ BinaryTreeNode *binaryTreePrecessor(BinaryTreeNode *pTreeNode) {
     return NULL;
 }
 
+#pragma mark -
 int main(int argc, const char * argv[]) {
     BinaryTreeNode *pBinaryTree = createBinaryTreeNode(5, NULL, BinaryTreeNodeChildModeLeft);
     BinaryTreeNode *pTreeNode1 = createBinaryTreeNode(3, pBinaryTree, BinaryTreeNodeChildModeLeft);
@@ -134,8 +157,8 @@ int main(int argc, const char * argv[]) {
     createBinaryTreeNode(4, pTreeNode1, BinaryTreeNodeChildModeRight);
     createBinaryTreeNode(7, pTreeNode2, BinaryTreeNodeChildModeLeft);
     createBinaryTreeNode(9, pTreeNode2, BinaryTreeNodeChildModeRight);
-    BinaryTreeNode *pKeyNode = binaryTreeSearch(pBinaryTree, 9);
-    BinaryTreeNode *pSuccessorKeyNode = binaryTreeSuccessor(pKeyNode);
+    BinaryTreeNode *maxNode = binaryTreeMaxRecursive(pBinaryTree);
+    BinaryTreeNode *minNode = binaryTreeMinRecursive(pBinaryTree);
     freeBinaryTree(pBinaryTree);
     return 0;
 }
