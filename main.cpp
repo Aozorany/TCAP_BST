@@ -32,6 +32,7 @@ BinaryTreeNode *binaryTreeMaxRecursive(BinaryTreeNode *pRoot);
 BinaryTreeNode *binaryTreeSuccessor(BinaryTreeNode *pTreeNode);
 BinaryTreeNode *binaryTreePrecessor(BinaryTreeNode *pTreeNode);
 void binaryTreeInsert(BinaryTreeNode **ppRoot, BinaryTreeNode *pNode);
+void binaryTreeDelete(BinaryTreeNode **ppRoot, BinaryTreeNode *pNode);
 
 BinaryTreeNode *createBinaryTreeNode(int _key, BinaryTreeNode *pParentNode, BinaryTreeNodeChildMode childMode) {
     BinaryTreeNode *pNode = (BinaryTreeNode *)malloc(sizeof(BinaryTreeNode));
@@ -179,15 +180,37 @@ void binaryTreeInsert(BinaryTreeNode **ppRoot, BinaryTreeNode *pNode) {
     }
 }
 
+void binaryTreeDelete(BinaryTreeNode **ppRoot, BinaryTreeNode *pNode) {
+    if (pNode->left == NULL && pNode->right == NULL) {
+        //If pNode has no left or right child, delete it and change parent node state
+        if (pNode->parent) {
+            if (pNode->parent->left == pNode) {
+                pNode->parent->left = NULL;
+            } else {
+                pNode->parent->right = NULL;
+            }
+        } else {
+            //If pNode has no parent, delete pNode will be an empty tree
+            *ppRoot = NULL;
+        }
+    } else if ((pNode->left && pNode->right == NULL) || (pNode->left == NULL && pNode->right)) {
+        //If pNode has only one left or right child, make a direct link to it's parentNode to it's child
+        
+    } else {
+        //If pNode has both left or right child, find it's seceedor and move it to current node
+    }
+}
+
 #pragma mark -
 int main(int argc, const char * argv[]) {
-    BinaryTreeNode *pBinaryTree = createBinaryTreeNode(5, NULL, BinaryTreeNodeChildModeLeft);
-    BinaryTreeNode *pTreeNode1 = createBinaryTreeNode(3, pBinaryTree, BinaryTreeNodeChildModeLeft);
-    BinaryTreeNode *pTreeNode2 = createBinaryTreeNode(8, pBinaryTree, BinaryTreeNodeChildModeRight);
-    createBinaryTreeNode(2, pTreeNode1, BinaryTreeNodeChildModeLeft);
-    createBinaryTreeNode(4, pTreeNode1, BinaryTreeNodeChildModeRight);
-    createBinaryTreeNode(7, pTreeNode2, BinaryTreeNodeChildModeLeft);
-    createBinaryTreeNode(9, pTreeNode2, BinaryTreeNodeChildModeRight);
+//    BinaryTreeNode *pBinaryTree = createBinaryTreeNode(5, NULL, BinaryTreeNodeChildModeLeft);
+//    BinaryTreeNode *pTreeNode1 = createBinaryTreeNode(3, pBinaryTree, BinaryTreeNodeChildModeLeft);
+//    BinaryTreeNode *pTreeNode2 = createBinaryTreeNode(8, pBinaryTree, BinaryTreeNodeChildModeRight);
+//    createBinaryTreeNode(2, pTreeNode1, BinaryTreeNodeChildModeLeft);
+//    createBinaryTreeNode(4, pTreeNode1, BinaryTreeNodeChildModeRight);
+//    createBinaryTreeNode(7, pTreeNode2, BinaryTreeNodeChildModeLeft);
+//    createBinaryTreeNode(9, pTreeNode2, BinaryTreeNodeChildModeRight);
+    BinaryTreeNode *pBinaryTree = NULL;
     BinaryTreeNode *insertNode = createBinaryTreeNode(6, NULL, BinaryTreeNodeChildModeLeft);
     binaryTreeInsert(&pBinaryTree, insertNode);
     freeBinaryTree(pBinaryTree);
